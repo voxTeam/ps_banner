@@ -29,21 +29,20 @@ if (!defined('_PS_VERSION_'))
 
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
-class BlockBanner extends Module implements WidgetInterface
+class Ps_Banner extends Module implements WidgetInterface
 {
 	public function __construct()
 	{
-		$this->name = 'blockbanner';
-		$this->tab = 'front_office_features';
-		$this->version = '2.0.0';
+		$this->name = 'ps_banner';
+		$this->version = '1.0.0';
 		$this->author = 'PrestaShop';
 		$this->need_instance = 0;
 
 		$this->bootstrap = true;
 		parent::__construct();
 
-		$this->displayName = $this->l('Banner block');
-		$this->description = $this->l('Displays a banner at the top of the shop.');
+		$this->displayName = $this->l('Banner');
+		$this->description = $this->l('Displays a banner on your shop.');
 		$this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
 	}
 
@@ -59,7 +58,7 @@ class BlockBanner extends Module implements WidgetInterface
 
 	public function hookActionObjectLanguageAddAfter($params)
 	{
-		return $this->installFixture((int)$params['object']->id, Configuration::get('BLOCKBANNER_IMG', (int)Configuration::get('PS_LANG_DEFAULT')));
+		return $this->installFixture((int)$params['object']->id, Configuration::get('BANNER_IMG', (int)Configuration::get('PS_LANG_DEFAULT')));
 	}
 
 	protected function installFixtures()
@@ -73,36 +72,36 @@ class BlockBanner extends Module implements WidgetInterface
 
 	protected function installFixture($id_lang, $image = null)
 	{
-		$values['BLOCKBANNER_IMG'][(int)$id_lang] = $image;
-		$values['BLOCKBANNER_LINK'][(int)$id_lang] = '';
-		$values['BLOCKBANNER_DESC'][(int)$id_lang] = '';
-		Configuration::updateValue('BLOCKBANNER_IMG', $values['BLOCKBANNER_IMG']);
-		Configuration::updateValue('BLOCKBANNER_LINK', $values['BLOCKBANNER_LINK']);
-		Configuration::updateValue('BLOCKBANNER_DESC', $values['BLOCKBANNER_DESC']);
+		$values['BANNER_IMG'][(int)$id_lang] = $image;
+		$values['BANNER_LINK'][(int)$id_lang] = '';
+		$values['BANNER_DESC'][(int)$id_lang] = '';
+		Configuration::updateValue('BANNER_IMG', $values['BANNER_IMG']);
+		Configuration::updateValue('BANNER_LINK', $values['BANNER_LINK']);
+		Configuration::updateValue('BANNER_DESC', $values['BANNER_DESC']);
 	}
 
 	public function uninstall()
 	{
-		Configuration::deleteByName('BLOCKBANNER_IMG');
-		Configuration::deleteByName('BLOCKBANNER_LINK');
-		Configuration::deleteByName('BLOCKBANNER_DESC');
+		Configuration::deleteByName('BANNER_IMG');
+		Configuration::deleteByName('BANNER_LINK');
+		Configuration::deleteByName('BANNER_DESC');
 		return parent::uninstall();
 	}
 
 	public function renderWidget($hookName, array $params)
 	{
 		$this->smarty->assign($this->getWidgetVariables($hookName, $params));
-		return $this->display(__FILE__, 'blockbanner.tpl');
+		return $this->display(__FILE__, 'ps_banner.tpl');
 	}
 
 	public function getWidgetVariables($hookName, array $params)
 	{
-		$imgname = Configuration::get('BLOCKBANNER_IMG', $this->context->language->id);
+		$imgname = Configuration::get('BANNER_IMG', $this->context->language->id);
 
 		if ($imgname && file_exists(_PS_MODULE_DIR_.$this->name.DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$imgname))
 			$this->smarty->assign('banner_img', $this->context->link->protocol_content.Tools::getMediaServer($imgname).$this->_path.'img/'.$imgname);
 
-		$banner_link = Configuration::get('BLOCKBANNER_LINK', $this->context->language->id);
+		$banner_link = Configuration::get('BANNER_LINK', $this->context->language->id);
 		if (!$banner_link) {
 			// If link wasn't specified, use shop homepage
 			$banner_link = $this->context->link->getPageLink('index');
@@ -110,7 +109,7 @@ class BlockBanner extends Module implements WidgetInterface
 
 		return [
 			'banner_link' => $banner_link,
-			'banner_desc' => Configuration::get('BLOCKBANNER_DESC', $this->context->language->id)
+			'banner_desc' => Configuration::get('BANNER_DESC', $this->context->language->id)
 		];
 	}
 
@@ -124,43 +123,43 @@ class BlockBanner extends Module implements WidgetInterface
 
 			foreach ($languages as $lang)
 			{
-				if (isset($_FILES['BLOCKBANNER_IMG_'.$lang['id_lang']])
-					&& isset($_FILES['BLOCKBANNER_IMG_'.$lang['id_lang']]['tmp_name'])
-					&& !empty($_FILES['BLOCKBANNER_IMG_'.$lang['id_lang']]['tmp_name']))
+				if (isset($_FILES['BANNER_IMG_'.$lang['id_lang']])
+					&& isset($_FILES['BANNER_IMG_'.$lang['id_lang']]['tmp_name'])
+					&& !empty($_FILES['BANNER_IMG_'.$lang['id_lang']]['tmp_name']))
 				{
-					if ($error = ImageManager::validateUpload($_FILES['BLOCKBANNER_IMG_'.$lang['id_lang']], 4000000))
+					if ($error = ImageManager::validateUpload($_FILES['BANNER_IMG_'.$lang['id_lang']], 4000000))
 						return $error;
 					else
 					{
-						$ext = substr($_FILES['BLOCKBANNER_IMG_'.$lang['id_lang']]['name'], strrpos($_FILES['BLOCKBANNER_IMG_'.$lang['id_lang']]['name'], '.') + 1);
-						$file_name = md5($_FILES['BLOCKBANNER_IMG_'.$lang['id_lang']]['name']).'.'.$ext;
+						$ext = substr($_FILES['BANNER_IMG_'.$lang['id_lang']]['name'], strrpos($_FILES['BANNER_IMG_'.$lang['id_lang']]['name'], '.') + 1);
+						$file_name = md5($_FILES['BANNER_IMG_'.$lang['id_lang']]['name']).'.'.$ext;
 
-						if (!move_uploaded_file($_FILES['BLOCKBANNER_IMG_'.$lang['id_lang']]['tmp_name'], dirname(__FILE__).DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$file_name))
+						if (!move_uploaded_file($_FILES['BANNER_IMG_'.$lang['id_lang']]['tmp_name'], dirname(__FILE__).DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$file_name))
 							return $this->displayError($this->l('An error occurred while attempting to upload the file.'));
 						else
 						{
-							if (Configuration::hasContext('BLOCKBANNER_IMG', $lang['id_lang'], Shop::getContext())
-								&& Configuration::get('BLOCKBANNER_IMG', $lang['id_lang']) != $file_name)
-								@unlink(dirname(__FILE__).DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.Configuration::get('BLOCKBANNER_IMG', $lang['id_lang']));
+							if (Configuration::hasContext('BANNER_IMG', $lang['id_lang'], Shop::getContext())
+								&& Configuration::get('BANNER_IMG', $lang['id_lang']) != $file_name)
+								@unlink(dirname(__FILE__).DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.Configuration::get('BANNER_IMG', $lang['id_lang']));
 
-							$values['BLOCKBANNER_IMG'][$lang['id_lang']] = $file_name;
+							$values['BANNER_IMG'][$lang['id_lang']] = $file_name;
 						}
 					}
 
 					$update_images_values = true;
 				}
 
-				$values['BLOCKBANNER_LINK'][$lang['id_lang']] = Tools::getValue('BLOCKBANNER_LINK_'.$lang['id_lang']);
-				$values['BLOCKBANNER_DESC'][$lang['id_lang']] = Tools::getValue('BLOCKBANNER_DESC_'.$lang['id_lang']);
+				$values['BANNER_LINK'][$lang['id_lang']] = Tools::getValue('BANNER_LINK_'.$lang['id_lang']);
+				$values['BANNER_DESC'][$lang['id_lang']] = Tools::getValue('BANNER_DESC_'.$lang['id_lang']);
 			}
 
 			if ($update_images_values)
-				Configuration::updateValue('BLOCKBANNER_IMG', $values['BLOCKBANNER_IMG']);
+				Configuration::updateValue('BANNER_IMG', $values['BANNER_IMG']);
 
-			Configuration::updateValue('BLOCKBANNER_LINK', $values['BLOCKBANNER_LINK']);
-			Configuration::updateValue('BLOCKBANNER_DESC', $values['BLOCKBANNER_DESC']);
+			Configuration::updateValue('BANNER_LINK', $values['BANNER_LINK']);
+			Configuration::updateValue('BANNER_DESC', $values['BANNER_DESC']);
 
-			$this->_clearCache('blockbanner.tpl');
+			$this->_clearCache('ps_banner.tpl');
 			return $this->displayConfirmation($this->l('The settings have been updated.'));
 		}
 		return '';
@@ -183,7 +182,7 @@ class BlockBanner extends Module implements WidgetInterface
 					array(
 						'type' => 'file_lang',
 						'label' => $this->l('Top banner image'),
-						'name' => 'BLOCKBANNER_IMG',
+						'name' => 'BANNER_IMG',
 						'desc' => $this->l('Upload an image for your top banner. The recommended dimensions are 1170 x 65px if you are using the default theme.'),
 						'lang' => true,
 					),
@@ -191,14 +190,14 @@ class BlockBanner extends Module implements WidgetInterface
 						'type' => 'text',
 						'lang' => true,
 						'label' => $this->l('Banner Link'),
-						'name' => 'BLOCKBANNER_LINK',
+						'name' => 'BANNER_LINK',
 						'desc' => $this->l('Enter the link associated to your banner. When clicking on the banner, the link opens in the same window. If no link is entered, it redirects to the homepage.')
 					),
 					array(
 						'type' => 'text',
 						'lang' => true,
 						'label' => $this->l('Banner description'),
-						'name' => 'BLOCKBANNER_DESC',
+						'name' => 'BANNER_DESC',
 						'desc' => $this->l('Please enter a short but meaningful description for the banner.')
 					)
 				),
@@ -236,9 +235,9 @@ class BlockBanner extends Module implements WidgetInterface
 
 		foreach ($languages as $lang)
 		{
-			$fields['BLOCKBANNER_IMG'][$lang['id_lang']] = Tools::getValue('BLOCKBANNER_IMG_'.$lang['id_lang'], Configuration::get('BLOCKBANNER_IMG', $lang['id_lang']));
-			$fields['BLOCKBANNER_LINK'][$lang['id_lang']] = Tools::getValue('BLOCKBANNER_LINK_'.$lang['id_lang'], Configuration::get('BLOCKBANNER_LINK', $lang['id_lang']));
-			$fields['BLOCKBANNER_DESC'][$lang['id_lang']] = Tools::getValue('BLOCKBANNER_DESC_'.$lang['id_lang'], Configuration::get('BLOCKBANNER_DESC', $lang['id_lang']));
+			$fields['BANNER_IMG'][$lang['id_lang']] = Tools::getValue('BANNER_IMG_'.$lang['id_lang'], Configuration::get('BANNER_IMG', $lang['id_lang']));
+			$fields['BANNER_LINK'][$lang['id_lang']] = Tools::getValue('BANNER_LINK_'.$lang['id_lang'], Configuration::get('BANNER_LINK', $lang['id_lang']));
+			$fields['BANNER_DESC'][$lang['id_lang']] = Tools::getValue('BANNER_DESC_'.$lang['id_lang'], Configuration::get('BANNER_DESC', $lang['id_lang']));
 		}
 
 		return $fields;
