@@ -91,7 +91,7 @@ class Ps_Banner extends Module implements WidgetInterface
 	public function renderWidget($hookName, array $params)
 	{
 		$this->smarty->assign($this->getWidgetVariables($hookName, $params));
-		return $this->display(__FILE__, 'ps_banner.tpl');
+		return $this->fetch('module:ps_banner/ps_banner.tpl');
 	}
 
 	public function getWidgetVariables($hookName, array $params)
