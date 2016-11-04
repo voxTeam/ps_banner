@@ -44,8 +44,8 @@ class Ps_Banner extends Module implements WidgetInterface
         $this->bootstrap = true;
         parent::__construct();
 
-        $this->displayName = $this->getTranslator()->trans('Banner', array(), 'Modules.Banner');
-        $this->description = $this->getTranslator()->trans('Displays a banner on your shop.', array(), 'Modules.Banner');
+        $this->displayName = $this->trans('Banner', array(), 'Modules.Banner');
+        $this->description = $this->trans('Displays a banner on your shop.', array(), 'Modules.Banner');
 
         $this->ps_versions_compliancy = array('min' => '1.7.0.0', 'max' => _PS_VERSION_);
 
@@ -115,7 +115,7 @@ class Ps_Banner extends Module implements WidgetInterface
                         $file_name = md5($_FILES['BANNER_IMG_'.$lang['id_lang']]['name']).'.'.$ext;
 
                         if (!move_uploaded_file($_FILES['BANNER_IMG_'.$lang['id_lang']]['tmp_name'], dirname(__FILE__).DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$file_name)) {
-                            return $this->displayError($this->getTranslator()->trans('An error occurred while attempting to upload the file.', array(), 'Admin.Notifications.Error'));
+                            return $this->displayError($this->trans('An error occurred while attempting to upload the file.', array(), 'Admin.Notifications.Error'));
                         } else {
                             if (Configuration::hasContext('BANNER_IMG', $lang['id_lang'], Shop::getContext())
                                 && Configuration::get('BANNER_IMG', $lang['id_lang']) != $file_name) {
@@ -142,7 +142,7 @@ class Ps_Banner extends Module implements WidgetInterface
 
             $this->_clearCache($this->templateFile);
 
-            return $this->displayConfirmation($this->getTranslator()->trans('The settings have been updated.', array(), 'Admin.Notifications.Success'));
+            return $this->displayConfirmation($this->trans('The settings have been updated.', array(), 'Admin.Notifications.Success'));
         }
 
         return '';
@@ -158,34 +158,34 @@ class Ps_Banner extends Module implements WidgetInterface
         $fields_form = array(
             'form' => array(
                 'legend' => array(
-                    'title' => $this->getTranslator()->trans('Settings', array(), 'Admin.Global'),
+                    'title' => $this->trans('Settings', array(), 'Admin.Global'),
                     'icon' => 'icon-cogs'
                 ),
                 'input' => array(
                     array(
                         'type' => 'file_lang',
-                        'label' => $this->getTranslator()->trans('Top banner image', array(), 'Modules.Banner'),
+                        'label' => $this->trans('Top banner image', array(), 'Modules.Banner'),
                         'name' => 'BANNER_IMG',
-                        'desc' => $this->getTranslator()->trans('Upload an image for your top banner. The recommended dimensions are 1110 x 214px if you are using the default theme.', array(), 'Modules.Banner'),
+                        'desc' => $this->trans('Upload an image for your top banner. The recommended dimensions are 1110 x 214px if you are using the default theme.', array(), 'Modules.Banner'),
                         'lang' => true,
                     ),
                     array(
                         'type' => 'text',
                         'lang' => true,
-                        'label' => $this->getTranslator()->trans('Banner Link', array(), 'Modules.Banner'),
+                        'label' => $this->trans('Banner Link', array(), 'Modules.Banner'),
                         'name' => 'BANNER_LINK',
-                        'desc' => $this->getTranslator()->trans('Enter the link associated to your banner. When clicking on the banner, the link opens in the same window. If no link is entered, it redirects to the homepage.', array(), 'Modules.Banner')
+                        'desc' => $this->trans('Enter the link associated to your banner. When clicking on the banner, the link opens in the same window. If no link is entered, it redirects to the homepage.', array(), 'Modules.Banner')
                     ),
                     array(
                         'type' => 'text',
                         'lang' => true,
-                        'label' => $this->getTranslator()->trans('Banner description', array(), 'Modules.Banner'),
+                        'label' => $this->trans('Banner description', array(), 'Modules.Banner'),
                         'name' => 'BANNER_DESC',
-                        'desc' => $this->getTranslator()->trans('Please enter a short but meaningful description for the banner.', array(), 'Modules.Banner')
+                        'desc' => $this->trans('Please enter a short but meaningful description for the banner.', array(), 'Modules.Banner')
                     )
                 ),
                 'submit' => array(
-                    'title' => $this->getTranslator()->trans('Save', array(), 'Admin.Actions')
+                    'title' => $this->trans('Save', array(), 'Admin.Actions')
                 )
             ),
         );
