@@ -31,6 +31,8 @@ use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class Ps_Banner extends Module implements WidgetInterface
 {
+    private $templateFile;
+
 	public function __construct()
 	{
 		$this->name = 'ps_banner';
@@ -43,17 +45,19 @@ class Ps_Banner extends Module implements WidgetInterface
 
 		$this->displayName = $this->getTranslator()->trans('Banner', array(), 'Modules.Banner');
 		$this->description = $this->getTranslator()->trans('Displays a banner on your shop.', array(), 'Modules.Banner');
+
 		$this->ps_versions_compliancy = array('min' => '1.7.0.0', 'max' => _PS_VERSION_);
+
+        $this->templateFile = 'module:ps_banner/ps_banner.tpl';
 	}
 
 	public function install()
 	{
-		return
-			parent::install() &&
+		return (parent::install() &&
 			$this->registerHook('displayHome') &&
 			$this->registerHook('actionObjectLanguageAddAfter') &&
 			$this->installFixtures() &&
-			$this->disableDevice(Context::DEVICE_MOBILE);
+			$this->disableDevice(Context::DEVICE_MOBILE));
 	}
 
 	public function hookActionObjectLanguageAddAfter($params)
@@ -64,8 +68,10 @@ class Ps_Banner extends Module implements WidgetInterface
 	protected function installFixtures()
 	{
 		$languages = Language::getLanguages(false);
-		foreach ($languages as $lang)
-			$this->installFixture((int)$lang['id_lang'], 'sale70.png');
+
+		foreach ($languages as $lang) {
+            $this->installFixture((int)$lang['id_lang'], 'sale70.png');
+        }
 
 		return true;
 	}
@@ -75,6 +81,7 @@ class Ps_Banner extends Module implements WidgetInterface
 		$values['BANNER_IMG'][(int)$id_lang] = $image;
 		$values['BANNER_LINK'][(int)$id_lang] = '';
 		$values['BANNER_DESC'][(int)$id_lang] = '';
+
 		Configuration::updateValue('BANNER_IMG', $values['BANNER_IMG']);
 		Configuration::updateValue('BANNER_LINK', $values['BANNER_LINK']);
 		Configuration::updateValue('BANNER_DESC', $values['BANNER_DESC']);
@@ -85,32 +92,8 @@ class Ps_Banner extends Module implements WidgetInterface
 		Configuration::deleteByName('BANNER_IMG');
 		Configuration::deleteByName('BANNER_LINK');
 		Configuration::deleteByName('BANNER_DESC');
+
 		return parent::uninstall();
-	}
-
-	public function renderWidget($hookName, array $params)
-	{
-		$this->smarty->assign($this->getWidgetVariables($hookName, $params));
-		return $this->fetch('module:ps_banner/ps_banner.tpl');
-	}
-
-	public function getWidgetVariables($hookName, array $params)
-	{
-		$imgname = Configuration::get('BANNER_IMG', $this->context->language->id);
-
-		if ($imgname && file_exists(_PS_MODULE_DIR_.$this->name.DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$imgname))
-			$this->smarty->assign('banner_img', $this->context->link->protocol_content.Tools::getMediaServer($imgname).$this->_path.'img/'.$imgname);
-
-		$banner_link = Configuration::get('BANNER_LINK', $this->context->language->id);
-		if (!$banner_link) {
-			// If link wasn't specified, use shop homepage
-			$banner_link = $this->context->link->getPageLink('index');
-		}
-
-		return [
-			'banner_link' => $banner_link,
-			'banner_desc' => Configuration::get('BANNER_DESC', $this->context->language->id)
-		];
 	}
 
 	public function postProcess()
@@ -127,20 +110,19 @@ class Ps_Banner extends Module implements WidgetInterface
 					&& isset($_FILES['BANNER_IMG_'.$lang['id_lang']]['tmp_name'])
 					&& !empty($_FILES['BANNER_IMG_'.$lang['id_lang']]['tmp_name']))
 				{
-					if ($error = ImageManager::validateUpload($_FILES['BANNER_IMG_'.$lang['id_lang']], 4000000))
-						return $error;
-					else
-					{
+					if ($error = ImageManager::validateUpload($_FILES['BANNER_IMG_'.$lang['id_lang']], 4000000)) {
+                        return $error;
+                    } else {
 						$ext = substr($_FILES['BANNER_IMG_'.$lang['id_lang']]['name'], strrpos($_FILES['BANNER_IMG_'.$lang['id_lang']]['name'], '.') + 1);
 						$file_name = md5($_FILES['BANNER_IMG_'.$lang['id_lang']]['name']).'.'.$ext;
 
-						if (!move_uploaded_file($_FILES['BANNER_IMG_'.$lang['id_lang']]['tmp_name'], dirname(__FILE__).DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$file_name))
-							return $this->displayError($this->getTranslator()->trans('An error occurred while attempting to upload the file.', array(), 'Admin.Notifications.Error'));
-						else
-						{
+						if (!move_uploaded_file($_FILES['BANNER_IMG_'.$lang['id_lang']]['tmp_name'], dirname(__FILE__).DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$file_name)) {
+                            return $this->displayError($this->getTranslator()->trans('An error occurred while attempting to upload the file.', array(), 'Admin.Notifications.Error'));
+                        } else {
 							if (Configuration::hasContext('BANNER_IMG', $lang['id_lang'], Shop::getContext())
-								&& Configuration::get('BANNER_IMG', $lang['id_lang']) != $file_name)
-								@unlink(dirname(__FILE__).DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.Configuration::get('BANNER_IMG', $lang['id_lang']));
+								&& Configuration::get('BANNER_IMG', $lang['id_lang']) != $file_name) {
+                                @unlink(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . Configuration::get('BANNER_IMG', $lang['id_lang']));
+                            }
 
 							$values['BANNER_IMG'][$lang['id_lang']] = $file_name;
 						}
@@ -153,15 +135,18 @@ class Ps_Banner extends Module implements WidgetInterface
 				$values['BANNER_DESC'][$lang['id_lang']] = Tools::getValue('BANNER_DESC_'.$lang['id_lang']);
 			}
 
-			if ($update_images_values)
-				Configuration::updateValue('BANNER_IMG', $values['BANNER_IMG']);
+			if ($update_images_values) {
+                Configuration::updateValue('BANNER_IMG', $values['BANNER_IMG']);
+            }
 
 			Configuration::updateValue('BANNER_LINK', $values['BANNER_LINK']);
 			Configuration::updateValue('BANNER_DESC', $values['BANNER_DESC']);
 
-			$this->_clearCache('ps_banner.tpl');
+			$this->_clearCache($this->templateFile);
+
 			return $this->displayConfirmation($this->getTranslator()->trans('The settings have been updated.', array(), 'Admin.Notifications.Success'));
 		}
+
 		return '';
 	}
 
@@ -207,10 +192,11 @@ class Ps_Banner extends Module implements WidgetInterface
 			),
 		);
 
-		$helper = new HelperForm();
-		$helper->show_toolbar = false;
-		$helper->table = $this->table;
-		$lang = new Language((int)Configuration::get('PS_LANG_DEFAULT'));
+        $lang = new Language((int)Configuration::get('PS_LANG_DEFAULT'));
+
+        $helper = new HelperForm();
+        $helper->show_toolbar = false;
+        $helper->table = $this->table;
 		$helper->default_form_language = $lang->id;
 		$helper->module = $this;
 		$helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') ? Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG') : 0;
@@ -242,4 +228,32 @@ class Ps_Banner extends Module implements WidgetInterface
 
 		return $fields;
 	}
+
+    public function renderWidget($hookName, array $params)
+    {
+        if (!$this->isCached($this->templateFile, $this->getCacheId('ps_banner'))) {
+            $this->smarty->assign($this->getWidgetVariables($hookName, $params));
+        }
+
+        return $this->fetch($this->templateFile, $this->getCacheId('ps_banner'));
+    }
+
+    public function getWidgetVariables($hookName, array $params)
+    {
+        $imgname = Configuration::get('BANNER_IMG', $this->context->language->id);
+
+        if ($imgname && file_exists(_PS_MODULE_DIR_.$this->name.DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$imgname)) {
+            $this->smarty->assign('banner_img', $this->context->link->protocol_content . Tools::getMediaServer($imgname) . $this->_path . 'img/' . $imgname);
+        }
+
+        $banner_link = Configuration::get('BANNER_LINK', $this->context->language->id);
+        if (!$banner_link) {
+            $banner_link = $this->context->link->getPageLink('index');
+        }
+
+        return array(
+            'banner_link' => $banner_link,
+            'banner_desc' => Configuration::get('BANNER_DESC', $this->context->language->id)
+        );
+    }
 }
