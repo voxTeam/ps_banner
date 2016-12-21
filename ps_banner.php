@@ -37,7 +37,7 @@ class Ps_Banner extends Module implements WidgetInterface
 	public function __construct()
 	{
 		$this->name = 'ps_banner';
-		$this->version = '1.0.4';
+		$this->version = '1.0.5';
 		$this->author = 'PrestaShop';
 		$this->need_instance = 0;
 
