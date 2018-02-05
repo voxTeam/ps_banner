@@ -2,7 +2,7 @@
   "name": "prestashop/ps_banner",
   "description": "PrestaShop module ps_banner",
   "homepage": "https://github.com/PrestaShop/ps_banner",
-  "license": "AFL - Academic Free License (AFL 3.0)",
+  "license": "AFL-3.0",
   "authors": [
     {
       "name": "PrestaShop SA",
