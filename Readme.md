@@ -2,7 +2,7 @@
 
 ## About
 
-Displays a banner on your store.
+Add a banner to the homepage of your store to highlight your sales and new products in a visual and friendly way.
 
 ## Reporting issues
 
