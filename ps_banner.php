@@ -45,7 +45,7 @@ class Ps_Banner extends Module implements WidgetInterface
         parent::__construct();
 
         $this->displayName = $this->trans('Banner', array(), 'Modules.Banner.Admin');
-        $this->description = $this->trans('Displays a banner on your shop.', array(), 'Modules.Banner.Admin');
+        $this->description = $this->trans('Add a banner to the homepage of your store to highlight your sales and new products in a visual and friendly way.', array(), 'Modules.Banner.Admin');
 
         $this->ps_versions_compliancy = array('min' => '1.7.1.0', 'max' => _PS_VERSION_);
 
