@@ -1,0 +1,29 @@
+{
+  "name": "ps_banner_e2e_tests",
+  "version": "1.0.0",
+  "description": "Tests E2E for ps_banner modules",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha --recursive --file ./node_modules/prestashop_test_lib/kernel/utils/setup.js scenarios/*",
+    "lint": "eslint --ignore-path .gitignore .",
+    "lint-fix": "eslint --ignore-path .gitignore --fix ."
+  },
+  "keywords": [
+    "e2e",
+    "tests",
+    "playwright"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "eslint-config-prestashop": "0.0.2",
+    "mocha": "^8.2.1",
+    "mochawesome": "^6.2.1",
+    "prestashop_test_lib": "0.0.8"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.15.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
+  }
+}
