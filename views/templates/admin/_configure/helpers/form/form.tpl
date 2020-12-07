@@ -52,7 +52,7 @@
 							</button>
 							<ul class="dropdown-menu">
 								{foreach from=$languages item=lang}
-								<li><a href="javascript:hideOtherLanguage({$lang.id_lang});" tabindex="-1">{$lang.name}</a></li>
+								<li><a href="javascript:hideOtherLanguage({$lang.id_lang});" id="dropdown-lang-item-link-{$lang.name}" tabindex="-1">{$lang.name}</a></li>
 								{/foreach}
 							</ul>
 						</div>
