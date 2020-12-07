@@ -7,6 +7,11 @@
     "lint": "eslint --ignore-path .gitignore .",
     "lint-fix": "eslint --ignore-path .gitignore --fix ."
   },
+  "_moduleAliases": {
+    "@versions": "versions",
+    "@scenarios": "scenarios",
+    "@utils": "utils"
+  },
   "keywords": [
     "e2e",
     "tests",
@@ -15,10 +20,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chai": "^4.2.0",
     "eslint-config-prestashop": "0.0.2",
     "mocha": "^8.2.1",
     "mochawesome": "^6.2.1",
-    "prestashop_test_lib": "0.0.8"
+    "module-alias": "^2.2.2",
+    "prestashop_test_lib": "0.0.9"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
