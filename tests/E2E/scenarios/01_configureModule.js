@@ -1,12 +1,13 @@
 require('module-alias/register');
 
 const {expect} = require('chai');
-const helper = require('prestashop_test_lib/kernel/utils/helpers');
+const browserHelper = require('prestashop_test_lib/kernel/utils/helpers.js');
+const configClassMap = require('@utils/configClassMap.js');
+const imageHelper = require('@utils/imageHelper.js');
+const fileHelper = require('@utils/fileHelper');
 
 // Get resolver
-const VersionSelectResolver = require('prestashop_test_lib/kernel/resolvers/versionSelectResolver');
-
-const configClassMap = require('@utils/configClassMap');
+const VersionSelectResolver = require('prestashop_test_lib/kernel/resolvers/versionSelectResolver.js');
 
 const versionSelectResolver = new VersionSelectResolver(global.PS_VERSION, configClassMap);
 
@@ -25,16 +26,43 @@ const moduleToInstall = {
   tag: 'ps_banner',
 };
 
-describe(`Go to ps_banner configuration page`, async () => {
+const moduleConfiguration = {
+  en: {
+    langId: 1,
+    imagePath: './image_en.png',
+    link: global.FO.URL,
+    description: 'This is a description for module ps_banner',
+  },
+  fr: {
+    langId: 2,
+    imagePath: './image_fr.png',
+    link: global.FO.URL,
+    description: 'Ceci est une description du module ps_banner',
+  },
+};
+
+describe('Go to ps_banner configuration page', async () => {
   // before and after functions
   before(async function () {
-    browserContext = await helper.createBrowserContext(this.browser);
+    browserContext = await browserHelper.createBrowserContext(this.browser);
 
-    page = await helper.newTab(browserContext);
+    page = await browserHelper.newTab(browserContext);
+
+    // Create images for test
+    await Promise.all([
+      imageHelper.generateImage(moduleConfiguration.en.imagePath),
+      imageHelper.generateImage(moduleConfiguration.fr.imagePath),
+    ]);
   });
 
   after(async () => {
-    await helper.closeBrowserContext(browserContext);
+    await browserHelper.closeBrowserContext(browserContext);
+
+    // Delete images after test
+    await Promise.all([
+      fileHelper.deleteFile(moduleConfiguration.en.imagePath),
+      fileHelper.deleteFile(moduleConfiguration.fr.imagePath),
+    ]);
   });
 
   it('should go to login page', async () => {
@@ -57,7 +85,7 @@ describe(`Go to ps_banner configuration page`, async () => {
     await expect(pageTitle).to.contains(dashboardPage.pageTitle);
   });
 
-  it('should go to module manager page', async () =>  {
+  it('should go to module manager page', async () => {
     await dashboardPage.goToSubMenu(
       page,
       dashboardPage.modulesParentLink,
@@ -93,5 +121,11 @@ describe(`Go to ps_banner configuration page`, async () => {
     // Check module name
     const pageSubtitle = await psBannerModulePage.getPageSubtitle(page);
     await expect(pageSubtitle).to.contain(moduleToInstall.name);
+  });
+
+  it('should set module configuration', async () => {
+    const textResult = await psBannerModulePage.setConfiguration(page, moduleConfiguration);
+
+    await expect(textResult).to.contain(psBannerModulePage.updatedSettingSuccessfulMessage);
   });
 });

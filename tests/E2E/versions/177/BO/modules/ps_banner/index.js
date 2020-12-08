@@ -21,14 +21,14 @@ class PS_BANNER extends ModuleConfigurationPage.constructor {
 
     // Form selectors
     this.moduleForm = '#module_form';
-    this.bannerImageInput = langId => `#BANNER_IMG_${langId}-name`;
-    this.bannerLinkInput = langId => `#BANNER_LINK_${langId}`;
-    this.bannerDescriptionInput = langId => `#BANNER_DESC_${langId}`;
+    this.bannerImageSelectButton = (langId) => `#BANNER_IMG_${langId}-selectbutton`;
+    this.bannerLinkInput = (langId) => `#BANNER_LINK_${langId}`;
+    this.bannerDescriptionInput = (langId) => `#BANNER_DESC_${langId}`;
     this.saveButton = '#module_form_submit_btn';
 
     // Change languages selector
     this.dropdownLangButton = `${this.moduleForm} button.dropdown-toggle`;
-    this.dropdownLangItemLink = langId => `#dropdown-lang-item-link-${langId}`;
+    this.dropdownLangItemLink = (langId) => `#dropdown-lang-item-link-${langId}`;
   }
 
   // Functions
@@ -56,18 +56,23 @@ class PS_BANNER extends ModuleConfigurationPage.constructor {
    * @return {Promise<void>}
    */
   async uploadImagePath(page, imagePath, langId) {
-    await this.uploadFile(page, this.bannerImageInput(langId), imagePath);
+    // Set value when fileChooser is open
+    page.once('filechooser', async (fileChooser) => {
+      await fileChooser.setFiles(imagePath);
+    });
+
+    await page.click(this.bannerImageSelectButton(langId));
   }
 
   /**
    * Set link for a specific language
    * @param page
-   * @param linkValue
+   * @param link
    * @param langId
    * @return {Promise<void>}
    */
-  async setBannerLink(page, linkValue, langId) {
-    await this.setValue(page, this.bannerLinkInput(langId), linkValue);
+  async setBannerLink(page, link, langId) {
+    await this.setValue(page, this.bannerLinkInput(langId), link);
   }
 
   /**
@@ -90,18 +95,17 @@ class PS_BANNER extends ModuleConfigurationPage.constructor {
   async fillSpecificLanguageForm(page, configuration) {
     await this.changeLanguage(page, configuration.langId);
     await this.uploadImagePath(page, configuration.imagePath, configuration.langId);
-    await this.setBannerLink(page, configuration.linkValue, configuration.langId);
+    await this.setBannerLink(page, configuration.link, configuration.langId);
     await this.setBannerDescription(page, configuration.description, configuration.langId);
   }
-
 
   /**
    * Configure module in 2 languages en and fr
    * @param page
    * @param configuration
-   * @return {Promise<void>}
+   * @return {Promise<string>}
    */
-  async configureModule(page, configuration) {
+  async setConfiguration(page, configuration) {
     // Fill form in lang=en
     await this.fillSpecificLanguageForm(page, configuration.en);
 
