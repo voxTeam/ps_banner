@@ -16,6 +16,7 @@ const loginPage = versionSelectResolver.require('BO/login/index.js');
 const dashboardPage = versionSelectResolver.require('BO/dashboard/index.js');
 const moduleManagerPage = versionSelectResolver.require('BO/modules/moduleManager/index.js');
 const psBannerModulePage = versionSelectResolver.require('BO/modules/ps_banner/index.js');
+const homePage = versionSelectResolver.require('FO/home/index.js');
 
 // Browser vars
 let browserContext;
@@ -127,5 +128,36 @@ describe('Go to ps_banner configuration page', async () => {
     const textResult = await psBannerModulePage.setConfiguration(page, moduleConfiguration);
 
     await expect(textResult).to.contain(psBannerModulePage.updatedSettingSuccessfulMessage);
+  });
+
+  it('should view my shop and check that banner exist', async () => {
+    page = await psBannerModulePage.viewMyShop(page);
+
+    const bannerExists = await homePage.isBannerVisible(page);
+    await expect(bannerExists).to.be.true;
+  });
+
+  it('should check banner link and description in english', async () => {
+    await homePage.changeLanguage(page, 'en');
+
+    // Check banner link
+    const bannerLink = await homePage.getBannerLink(page);
+    await expect(bannerLink).to.equal(moduleConfiguration.en.link);
+
+    // Check banner description
+    const bannerDescription = await homePage.getBannerDescription(page);
+    await expect(bannerDescription).to.equal(moduleConfiguration.en.description);
+  });
+
+  it('should check banner link and description in french', async () => {
+    await homePage.changeLanguage(page, 'fr');
+
+    // Check banner link
+    const bannerLink = await homePage.getBannerLink(page);
+    await expect(bannerLink).to.equal(moduleConfiguration.fr.link);
+
+    // Check banner description
+    const bannerDescription = await homePage.getBannerDescription(page);
+    await expect(bannerDescription).to.equal(moduleConfiguration.fr.description);
   });
 });
