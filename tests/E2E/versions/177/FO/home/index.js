@@ -1,4 +1,3 @@
-// Get resolver
 const CommonPage = require('@versions/177/FO/foBasePage.js');
 
 class Home extends CommonPage {
