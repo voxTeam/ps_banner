@@ -4,6 +4,7 @@
   "description": "Tests E2E for ps_banner modules",
   "scripts": {
     "e2e-tests": "./node_modules/mocha/bin/mocha --recursive --file ./node_modules/prestashop_test_lib/kernel/utils/setup.js scenarios/*",
+    "e2e-tests-fast-fail": "./node_modules/mocha/bin/mocha --bail --recursive --file ./node_modules/prestashop_test_lib/kernel/utils/setup.js scenarios/*",
     "lint": "eslint --ignore-path .gitignore .",
     "lint-fix": "eslint --ignore-path .gitignore --fix ."
   },
