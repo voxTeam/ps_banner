@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Tests E2E for ps_banner modules",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --recursive --file ./node_modules/prestashop_test_lib/kernel/utils/setup.js scenarios/*",
+    "e2e-tests": "./node_modules/mocha/bin/mocha --recursive --file ./node_modules/prestashop_test_lib/kernel/utils/setup.js scenarios/*",
     "lint": "eslint --ignore-path .gitignore .",
     "lint-fix": "eslint --ignore-path .gitignore --fix ."
   },
@@ -26,12 +26,12 @@
     "mocha": "^8.2.1",
     "mochawesome": "^6.2.1",
     "module-alias": "^2.2.2",
-    "prestashop_test_lib": "0.0.9"
+    "prestashop_test_lib": "0.0.10"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.15.0",
-    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint": "^5.4.0",
+    "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.22.1"
   }
 }
