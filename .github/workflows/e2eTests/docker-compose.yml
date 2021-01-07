@@ -17,7 +17,7 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-      - .:/var/www/html/modules/ps_banner
+      - ../../..:/var/www/html/modules/ps_banner
     ports:
       - 80:80
 
