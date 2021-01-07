@@ -13,12 +13,11 @@ In these tests, we used the actual stack :
 - [prestashop_test_lib](https://www.npmjs.com/package/prestashop_test_lib) which uses [playwright](https://playwright.dev/) as a node library to automate browsers.
 - [mocha](https://mochajs.org/) as a test framework.
 - [chai](https://www.chaijs.com/) as an assertion library.
-- [js-image-generator](https://www.npmjs.com/package/js-image-generator) to generate fake images for tests.
+- [js-image-generator](https://www.npmjs.com/package/js-image-generator) as a node library to generate fake images for tests.
 
 ## Running tests
 
-Before running tests, you should run `npm install`, to install all dependencies and to download browsers.
-
+Before running tests, you should run `npm install`, to install all dependencies.
 ### Running all tests
 
 ```shell
@@ -27,7 +26,9 @@ PS_VERSION='1.7.7' URL_FO='http://localhost.com/' npm run e2e-tests
 
 ### Running all tests with fast fail mode
 
-To run test that stop after the first fail: 
+The fast fail mode give us the possibility to abort the run after first test failure. It uses the --bail option from [mocha](https://mochajs.org/#command-line-usage).
+
+This mode is mostly used in CI (like here in Github Actions), to stop the tests as quickly as possible.
 
 ```shell
 PS_VERSION='1.7.7' URL_FO='http://localhost/prestashop/' npm run e2e-tests-fast-fail
