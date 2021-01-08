@@ -34,12 +34,12 @@ class Ps_Banner extends Module implements WidgetInterface
 {
     private $templateFile;
 
-	public function __construct()
-	{
-		$this->name = 'ps_banner';
-		$this->version = '2.1.0';
-		$this->author = 'PrestaShop';
-		$this->need_instance = 0;
+    public function __construct()
+    {
+        $this->name = 'ps_banner';
+        $this->version = '2.1.0';
+        $this->author = 'PrestaShop';
+        $this->need_instance = 0;
 
         $this->bootstrap = true;
         parent::__construct();
@@ -109,7 +109,7 @@ class Ps_Banner extends Module implements WidgetInterface
                     && isset($_FILES['BANNER_IMG_'.$lang['id_lang']]['tmp_name'])
                     && !empty($_FILES['BANNER_IMG_'.$lang['id_lang']]['tmp_name'])) {
                     if ($error = ImageManager::validateUpload($_FILES['BANNER_IMG_'.$lang['id_lang']], 4000000)) {
-                        return $error;
+                        return $this->displayError($error);
                     } else {
                         $ext = substr($_FILES['BANNER_IMG_'.$lang['id_lang']]['name'], strrpos($_FILES['BANNER_IMG_'.$lang['id_lang']]['name'], '.') + 1);
                         $file_name = md5($_FILES['BANNER_IMG_'.$lang['id_lang']]['name']).'.'.$ext;
