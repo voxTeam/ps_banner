@@ -1,5 +1,7 @@
 # Banner
 
+[![Latest Stable Version](https://poser.pugx.org/PrestaShop/ps_banner/v)](//packagist.org/packages/PrestaShop/ps_banner)
+
 ## About
 
 Add a banner to the homepage of your store to highlight your sales and new products in a visual and friendly way.
