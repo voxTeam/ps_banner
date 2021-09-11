@@ -29,7 +29,8 @@
       src="{$banner_img}"
       alt="{$banner_desc}"
       title="{$banner_desc}"
-      {if isset($banner_sizes[3])}{$banner_sizes[3] nofilter}{/if}>
+      width="{$banner_width}"
+      height="{$banner_height}"
   {else}
     <span>{$banner_desc}</span>
   {/if}

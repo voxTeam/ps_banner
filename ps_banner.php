@@ -272,7 +272,8 @@ class Ps_Banner extends Module implements WidgetInterface
 
             $this->smarty->assign([
                 'banner_img' => $this->context->link->protocol_content . Tools::getMediaServer($imgname) . $this->_path . 'img/' . $imgname,
-                'banner_sizes' => $sizes
+                'banner_width' => $sizes[0],
+                'banner_height' => $sizes[1]
             ]);
         }
 
