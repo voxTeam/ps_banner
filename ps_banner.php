@@ -265,9 +265,15 @@ class Ps_Banner extends Module implements WidgetInterface
     public function getWidgetVariables($hookName, array $params)
     {
         $imgname = Configuration::get('BANNER_IMG', $this->context->language->id);
+        $imgDir = _PS_MODULE_DIR_ . $this->name . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . $imgname;
 
-        if ($imgname && file_exists(_PS_MODULE_DIR_.$this->name.DIRECTORY_SEPARATOR.'img'.DIRECTORY_SEPARATOR.$imgname)) {
-            $this->smarty->assign('banner_img', $this->context->link->protocol_content . Tools::getMediaServer($imgname) . $this->_path . 'img/' . $imgname);
+        if ($imgname && file_exists($imgDir)) {
+            $sizes = getimagesize($imgDir);
+
+            $this->smarty->assign([
+                'banner_img' => $this->context->link->protocol_content . Tools::getMediaServer($imgname) . $this->_path . 'img/' . $imgname,
+                'banner_sizes' => $sizes
+            ]);
         }
 
         $banner_link = Configuration::get('BANNER_LINK', $this->context->language->id);
