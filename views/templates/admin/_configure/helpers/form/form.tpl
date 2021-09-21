@@ -26,7 +26,7 @@
 {extends file="helpers/form/form.tpl"}
 {block name="field"}
 	{if $input.type == 'file_lang'}
-		<div class="col-lg-9">
+		<div class="col-lg-8">
 			{foreach from=$languages item=language}
 				{if $languages|count > 1}
 					<div class="translatable-field lang-{$language.id_lang}" {if $language.id_lang != $defaultFormLanguage}style="display:none"{/if}>
